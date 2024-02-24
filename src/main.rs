@@ -1,3 +1,5 @@
+mod interface;
+
 use sfml::system::{
     Vector2f,
     Clock,
@@ -12,10 +14,18 @@ use sfml::window::{
 use sfml::graphics::{
     Color,
     Font,
+    RectangleShape,
+    Transformable,
+    Shape,
     RenderTarget,
     RenderWindow,
-    Text,
-    Transformable,
+};
+
+use interface::{
+    button::{
+        Button,
+        ButtonConfig
+    }
 };
 
 const FPS: i64 = 30;
@@ -33,16 +43,37 @@ fn main() {
         }
     };
     
-    let mut text = Text::new("Snow goes here", &font, 24);
+    // let mut text = Text::new("Snow goes here", &font, 24);
 
-    text.set_position(Vector2f::new((WIDTH as f32) / 2., (HEIGHT as f32) / 2.));
-    text.set_fill_color(Color::GREEN);
+    // text.set_position(Vector2f::new((WIDTH as f32) / 2., (HEIGHT as f32) / 2.));
+    // text.set_fill_color(Color::GREEN);
 
     // Create the window of the application
-    let mut window : RenderWindow = RenderWindow::new(VideoMode::new(WIDTH, HEIGHT, 32),
-                                                      "Snow Blitz",
-                                                      Style::CLOSE,
-                                                      &ContextSettings::default());
+    let mut window : RenderWindow = RenderWindow::new(
+        VideoMode::new(WIDTH, HEIGHT, 32),
+        "Snow Blitz",
+        Style::CLOSE,
+        &ContextSettings::default()
+    );
+
+    let button_config = ButtonConfig::new(
+        "O",
+        48,
+        Vector2f::new(100., 100.),
+        Color::rgb(255, 0, 0),
+        Color::rgb(0, 255, 0),
+        Color::rgb(0, 0, 255),
+        2.,
+        2.
+    );
+
+    let b = Button::new(
+        Vector2f::new(200., 200.),
+        &button_config,
+        &button_config,
+        Box::new(|| print!("Hi")),
+        &font
+    );
 
     while window.is_open() {
         if clock.elapsed_time() >= frame_time {
@@ -55,7 +86,7 @@ fn main() {
 
             window.clear(Color::WHITE);
             
-            window.draw(&text);
+            b.draw(&mut window);
 
             window.display();
             clock.restart();
